@@ -3,7 +3,7 @@ package biblioteca;
 import java.util.List;
 
 public class RepositorioSalasMemoria implements RepositorioSalas {
-    private List<Sala> salas = List.of(
+    private final List<Sala> salas = List.of(
             new Sala("A", "Sala A", 2),
             new Sala("B", "Sala B", 4),
             new Sala("C", "Sala C", 6),
