@@ -1,4 +1,5 @@
 package biblioteca;
 
-public class RepositorioReservas {
+public interface RepositorioReservas {
+    void guardar(Reserva reserva);
 }
