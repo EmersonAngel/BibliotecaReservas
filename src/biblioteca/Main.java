@@ -92,5 +92,53 @@ public class Main {
 
         System.out.println("Laura cancela la reserva:");
         reservaObserver.cancelar();
+
+        System.out.println("\n=== PRUEBAS STATE ===");
+
+// 1. Confirmar una reserva pendiente
+        Reserva reservaSofia = new ReservaBuilder()
+                .estudiante(new Estudiante("E010", "Sofía"))
+                .fecha(LocalDate.now().plusDays(3))
+                .horaInicio(LocalTime.of(9, 0))
+                .duracionHoras(1)
+                .cantidadPersonas(2)
+                .sala(new Sala("A", "Sala A", 2))
+                .build();
+        observadores.forEach(reservaSofia::agregarObservador);
+        System.out.println("1. Estado inicial: " + reservaSofia.getNombreEstado());
+        reservaSofia.confirmar();
+        System.out.println("1. Después de confirmar: " + reservaSofia.getNombreEstado());
+
+// 2. Cancelar una reserva confirmada
+        reservaSofia.cancelar();
+        System.out.println("2. Después de cancelar: " + reservaSofia.getNombreEstado());
+
+// 3. Intentar confirmar una reserva cancelada
+        try {
+            reservaSofia.confirmar();
+        } catch (IllegalStateException ex) {
+            System.out.println("3. Rechazado: " + ex.getMessage()
+                    + " Estado: " + reservaSofia.getNombreEstado());
+        }
+
+// 4. Finalizar otra reserva confirmada
+        Reserva reservaSamuel = fachada.realizarReserva(
+                new Estudiante("E004", "Samuel"),
+                LocalDate.now().plusDays(10),
+                LocalTime.of(11, 0),
+                1,
+                2,
+                new SeleccionPorCapacidad()
+        ).orElseThrow();
+        reservaSamuel.finalizar();
+        System.out.println("4. Después de finalizar: " + reservaSamuel.getNombreEstado());
+
+// 5. Intentar cancelar una reserva finalizada
+        try {
+            reservaSamuel.cancelar();
+        } catch (IllegalStateException ex) {
+            System.out.println("5. Rechazado: " + ex.getMessage()
+                    + " Estado: " + reservaSamuel.getNombreEstado());
+        }
     }
 }
