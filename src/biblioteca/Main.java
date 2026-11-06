@@ -71,5 +71,26 @@ public class Main {
         EstrategiaSeleccionSala preferidaNoAdecuada = new SeleccionSalaPreferida("B");
         System.out.println("Preferida B para 7: "
                 + preferidaNoAdecuada.seleccionar(disponibles, 7).orElse(null));
+
+        System.out.println("\n=== PRUEBA OBSERVER ===");
+        RepositorioSalasMemoria repoSalas = new RepositorioSalasMemoria();
+        RepositorioReservasMemoria repoReservas = new RepositorioReservasMemoria();
+        List<ObservadorReserva> observadores = List.of(
+                new NotificadorEstudiante(),
+                new RegistroEventos()
+        );
+        ReservaFacade fachada = new ReservaFacade(repoSalas, repoReservas, observadores);
+
+        Reserva reservaObserver = fachada.realizarReserva(
+                new Estudiante("E001", "Laura"),
+                LocalDate.now().plusDays(7),
+                LocalTime.of(14, 0),
+                2,
+                4,
+                new SeleccionPorCapacidad()
+        ).orElseThrow();
+
+        System.out.println("Laura cancela la reserva:");
+        reservaObserver.cancelar();
     }
 }
